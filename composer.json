@@ -1,0 +1,20 @@
+{
+  "name": "imos/domainredirector",
+  "type": "library",
+  "description": "imos DomainRedirector to redirect incoming requests to the correct domain",
+  "keywords": ["domain", "redirect"],
+  "homepage": "https://www.imos.net",
+  "authors": [
+    {
+      "name": "Michael Mezger",
+      "email": "mm@imos.net"
+    }
+  ],
+  "require": {
+    "php": ">=5.5.0",
+    "symfony/http-foundation": "~2.4"
+  },
+  "autoload": {
+    "psr-4": { "": "src/" }
+  }
+}
