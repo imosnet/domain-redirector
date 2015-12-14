@@ -93,4 +93,16 @@ class DomainRedirectorTest extends \PHPUnit_Framework_TestCase {
         $redirect = $this->fixture->getRedirect($request);
         $this->assertEquals('https://www.imos.net/de/test.html?x=y', rtrim($redirect, '/'));
     }
+
+    public function testRequestForNonExistentDomainFallsBackOnDefaultDomain()
+    {
+        // vorbereitung
+        $this->fixture->addPrimaryDomain('www.imos.net', true);
+        $this->fixture->setFallbackDomain('www.imos.net');
+        $request = Request::create('/de/test.html?x=y', 'GET', [], [], [], ['HTTP_HOST' => 'nonexistent.de']);
+
+        // asserts
+        $redirect = $this->fixture->getRedirect($request);
+        $this->assertEquals('https://www.imos.net/de/test.html?x=y', rtrim($redirect, '/'));
+    }
 }

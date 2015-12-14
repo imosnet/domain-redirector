@@ -10,4 +10,6 @@ interface DomainRedirectorInterface
     public function addSecondaryDomain($domain, $redirectDomain);
 
     public function getRedirect(Request $request);
+
+    public function setFallbackDomain($domain);
 }

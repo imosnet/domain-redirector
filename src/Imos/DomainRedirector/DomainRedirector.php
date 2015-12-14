@@ -23,6 +23,11 @@ class DomainRedirector implements DomainRedirectorInterface {
     private $secondaryDomains = array();
 
     /**
+     * @var string
+     */
+    private $fallbackDomain;
+
+    /**
      * @param $domain
      * @param bool|false $ssl
      * @return DomainRedirector
@@ -169,8 +174,43 @@ class DomainRedirector implements DomainRedirectorInterface {
             return $this->buildRedirectUrl($primaryDomain['domain'], $primaryDomain['ssl'], $request->server->get('REQUEST_URI'));
         }
 
+        // wenn wir eine fallback domain konfiguriert haben, dann evtl. fallback
+        if (!$this->isPrimaryDomain($domain) && strlen($this->getFallbackDomain())) {
+            $primaryDomain = $this->getPrimaryDomain($this->getFallbackDomain());
+
+            return $this->buildRedirectUrl($primaryDomain['domain'], $primaryDomain['ssl'], $request->server->get('REQUEST_URI'));
+        }
+
         // nichts zu tun
         return false;
+    }
+
+    /**
+     * Set the Fallback Domain, if no secondary domain matches
+     *
+     * @param $domain
+     * @return DomainRedirector
+     * @throws Exception\MissingPrimaryDomainException
+     */
+    public function setFallbackDomain($domain)
+    {
+        // teste ob die Primary domain schon existiert
+        if (!$this->isPrimaryDomain($domain)) {
+            throw new Exception\MissingPrimaryDomainException(sprintf('domain=(%s) does not exist', $domain));
+        }
+
+        $this->fallbackDomain = $domain;
+
+        return $this;
+    }
+
+    /**
+     * getter FallbackDomain
+     * @return string
+     */
+    public function getFallbackDomain()
+    {
+        return $this->fallbackDomain;
     }
 
     /**
