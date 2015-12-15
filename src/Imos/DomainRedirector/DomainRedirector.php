@@ -98,6 +98,9 @@ class DomainRedirector implements DomainRedirectorInterface {
      */
     public function addSecondaryDomain($domain, $redirectDomain)
     {
+        // domain parsen
+        $parsedDomain = $this->parseDomain($domain);
+
         // teste ob die Primary domain schon existiert
         if (!$this->isPrimaryDomain($redirectDomain)) {
             throw new Exception\MissingPrimaryDomainException(sprintf('domain=(%s) does not exist', $redirectDomain));
@@ -108,6 +111,14 @@ class DomainRedirector implements DomainRedirectorInterface {
             'domain' => $domain,
             'redirectDomain' => $redirectDomain
         ];
+
+        // falls wir eine www-domain haben, dann ist die nicht-www-domain automatisch eine weitere sekundär-domain
+        if (isset($parsedDomain['has_www']) && $parsedDomain['has_www']) {
+            $this->secondaryDomains[$parsedDomain['host_without_www']] = [
+                'domain' => $parsedDomain['host_without_www'],
+                'redirectDomain' => $redirectDomain
+            ];
+        }
 
         // fluent interface
         return $this;
