@@ -3,6 +3,7 @@
   "type": "library",
   "description": "imos DomainRedirector to redirect incoming requests to the correct domain",
   "keywords": ["domain", "redirect"],
+  "license": "MIT",
   "homepage": "https://www.imos.net",
   "authors": [
     {
