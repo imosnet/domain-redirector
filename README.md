@@ -1,5 +1,7 @@
 # imos/domain-redirector
 
+[![Build Status](https://api.travis-ci.org/imosnet/domain-redirector.svg)](https://travis-ci.org/imosnet/domain-redirector)
+
 Websites sometimes have many secondary domains. To satisfy seo requirements and make it the right way, every website
 should only have one primary domain. This library is designed to manage the domain configuration for a site. Special
 feature is, that you can configure multiple primary domains (that's useful for multi-site environments).
