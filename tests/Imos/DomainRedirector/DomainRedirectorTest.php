@@ -117,4 +117,21 @@ class DomainRedirectorTest extends \PHPUnit_Framework_TestCase {
         $redirect = $this->fixture->getRedirect($request);
         $this->assertEquals('https://www.imos.net/de/test.html?x=y', rtrim($redirect, '/'));
     }
+
+    public function testSecondarySubDomainWithWwwRedirectsToPrimary()
+    {
+        // vorbereitung
+        $this->fixture->addPrimaryDomain('shop.imos.net', true);
+        $this->fixture->addSecondaryDomain('www.shop.imos.net', 'shop.imos.net', false);
+
+        // asserts
+        $request = Request::create('/', 'GET', [], [], [], ['HTTP_HOST' => 'www.shop.imos.net']);
+        $redirect = $this->fixture->getRedirect($request);
+        $this->assertEquals('https://shop.imos.net', rtrim($redirect, '/'));
+
+        // asserts
+        $request = Request::create('/', 'GET', [], [], [], ['HTTP_HOST' => 'shop.imos.net', 'HTTPS' => 'on']);
+        $redirect = $this->fixture->getRedirect($request);
+        $this->assertFalse($redirect);
+    }
 }

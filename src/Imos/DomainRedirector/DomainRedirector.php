@@ -93,10 +93,11 @@ class DomainRedirector implements DomainRedirectorInterface {
      *
      * @param string $domain Sekundärdomain
      * @param string $redirectDomain Domain, auf die redirectet werden soll. Hier nur den host angeben (ohne scheme).
+     * @param bool $autoAddWww Falls true, wird beim hinzufuegen einer www-Domain automatisch auch None-WWW hinzugefügt
      * @return DomainRedirector
      * @throws Exception\MissingPrimaryDomainException Falls die PrimaryDomain noch nicht existiert
      */
-    public function addSecondaryDomain($domain, $redirectDomain)
+    public function addSecondaryDomain($domain, $redirectDomain, $autoAddWww = true)
     {
         // domain parsen
         $parsedDomain = $this->parseDomain($domain);
@@ -113,7 +114,7 @@ class DomainRedirector implements DomainRedirectorInterface {
         ];
 
         // falls wir eine www-domain haben, dann ist die nicht-www-domain automatisch eine weitere sekundär-domain
-        if (isset($parsedDomain['has_www']) && $parsedDomain['has_www']) {
+        if ($autoAddWww && isset($parsedDomain['has_www']) && $parsedDomain['has_www']) {
             $this->secondaryDomains[$parsedDomain['host_without_www']] = [
                 'domain' => $parsedDomain['host_without_www'],
                 'redirectDomain' => $redirectDomain
@@ -169,7 +170,6 @@ class DomainRedirector implements DomainRedirectorInterface {
     {
         // domain aus request ziehen
         $domain = $request->getHost();
-
         // falls wir ueber eine secondary domain kommen
         if ($this->isSecondaryDomain($domain)) {
             $secondaryDomain = $this->getSecondaryDomain($domain);
